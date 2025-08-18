@@ -1,0 +1,54 @@
+body {
+  margin: 0;
+  font-family: sans-serif;
+  background: url("images/background.jpg") no-repeat center center fixed;
+  background-size: cover;
+  overflow: hidden;
+}
+
+.ocean {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.ship {
+  position: absolute;
+  bottom: 10%;
+  left: -30%;
+  width: 300px;
+  animation: moveShip 20s linear infinite;
+}
+
+@keyframes moveShip {
+  0% { left: -30%; }
+  100% { left: 110%; }
+}
+
+.birds {
+  position: absolute;
+  top: 10%;
+  right: 5%;
+  width: 120px;
+  animation: flyBirds 8s ease-in-out infinite;
+}
+
+@keyframes flyBirds {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-20px); }
+}
+
+.form-container {
+  position: absolute;
+  top: 30%;
+  left: 50%;
+  transform: translate(-50%, -30%);
+  background: rgba(255, 255, 255, 0.8);
+  padding: 25px 40px;
+  border-radius: 10px;
+  box-shadow: 0 0 20px rgba(0,0,0,0.2);
+  text-align: center;
+}
+
+

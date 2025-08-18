@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Book Fitness Sessions</title>
+  <style>
+    body { 
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: url("https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8Zml0bmVzc3xlbnwwfHwwfHx8MA%3D%3D") no-repeat center center fixed; 
+      background-size: cover; 
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .container { 
+      background: rgba(255, 255, 255, 0.9);
+      padding: 20px 30px; 
+      border-radius: 12px; 
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+      max-width: 420px;
+      width: 100%;
+    }
+    h1 {
+      text-align: center;
+      color: #333;
+    }
+    label {
+      display: block;
+      margin-top: 10px;
+      font-weight: bold;
+      color: #333;
+    }
+    input, select, button {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 14px;
+    }
+    button {
+      background-color: #1d9f51;
+      color: white;
+      cursor: pointer;
+      border: none;
+      font-size: 16px;
+    }
+    button:hover {
+      background-color: #077926;
+    }
+    .message {
+      margin-top: 10px;
+      font-weight: bold;
+      text-align: center;
+    }
+    .success { color: green; }
+    .error { color: red; }
+    img {
+      width: 100%;
+      border-radius: 8px;
+      margin-top: 10px;
+    }
+    .preview {
+      display: none;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Book Fitness Session</h1>
+
+    <label for="name">Name</label>
+    <input type="text" id="name" placeholder="Enter your name"/>
+
+    <label for="roomNumber">Room Number</label>
+    <input type="text" id="roomNumber" placeholder="Enter your room number"/>
+
+    <label for="timeSlot">Preferred Time Slot</label>
+    <select id="timeSlot">
+      <option value="">--Select time--</option>
+      <option value="Morning(6AM-9AM)">Morning(6AM-9AM)</option>
+      <option value="Midday(9AM-12PM)">Midday(9AM-12PM)</option>
+      <option value="Evening(4PM-8PM)">Evening(4PM-8PM)</option>
+    </select>
+
+    <label for="activitySelect">Select Activity</label>
+    <select id="activitySelect">
+      <option value="">--Select an activity--</option>
+    </select>
+
+    <div class="preview" id="activityPreview">
+      <h3 id="previewName"></h3>
+      <p id="previewDescription"></p>
+      <p><strong>Price:</strong> ₹<span id="previewPrice"></span></p>
+      <img id="previewImage" src="" alt="Activity Image"/>
+    </div>
+
+    <button id="bookBtn">Book Session</button>
+
+    <div id="message" class="message"></div>
+  </div>
+
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyD0cA756dZeVEbR4Vqovsh5p74niMxNT3w",
+      authDomain: "cruise-ship-management-s-98138.firebaseapp.com",
+      projectId: "cruise-ship-management-s-98138",
+      storageBucket: "cruise-ship-management-s-98138.appspot.com",
+      messagingSenderId: "401246402444",
+      appId: "1:401246402444:web:dd8a21a7e144e90d3788a9"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    const activitySelect = document.getElementById("activitySelect");
+    const activityPreview = document.getElementById("activityPreview");
+    const previewName = document.getElementById("previewName");
+    const previewDescription = document.getElementById("previewDescription");
+    const previewPrice = document.getElementById("previewPrice");
+    const previewImage = document.getElementById("previewImage");
+    const messageDiv = document.getElementById("message");
+
+    // Load fitness sessions from Firestore
+    db.collection("fitnessSessions").get().then(snapshot => {
+      snapshot.forEach(doc => {
+        const data = doc.data();
+        const option = document.createElement("option");
+        option.value = doc.id;
+        option.textContent = data.activity;
+        option.dataset.description = data.description || "";
+        option.dataset.price = data.price || "";
+        option.dataset.image = data.imageUrl || "";
+        activitySelect.appendChild(option);
+      });
+    });
+
+    // Show preview on activity selection
+    activitySelect.addEventListener("change", () => {
+      const selectedOption = activitySelect.options[activitySelect.selectedIndex];
+      if (selectedOption.value) {
+        previewName.textContent = selectedOption.textContent;
+        previewDescription.textContent = selectedOption.dataset.description;
+        previewPrice.textContent = selectedOption.dataset.price;
+        previewImage.src = selectedOption.dataset.image || "https://via.placeholder.com/400x250?text=No+Image";
+        activityPreview.style.display = "block"; 
+      } else {
+        activityPreview.style.display = "none";
+      }
+    });
+
+    // Book session
+    document.getElementById("bookBtn").addEventListener("click", () => {
+      const name = document.getElementById("name").value.trim();
+      const roomNumber = document.getElementById("roomNumber").value.trim();
+      const activityId = activitySelect.value;
+      const timeSlot = document.getElementById("timeSlot").value;
+      const selectedOption = activitySelect.options[activitySelect.selectedIndex];
+
+      if (!name || !roomNumber || !activityId || !timeSlot) {
+        messageDiv.textContent = "Please fill in all fields.";
+        messageDiv.className = "message error";
+        return;
+      }
+
+      db.collection("fitnessOrders").add({
+        customerName: name, // ✅ fixed field name
+        roomNumber: roomNumber,
+        activity: selectedOption.textContent, // ✅ matches your schema
+        description: selectedOption.dataset.description || "",
+        price: selectedOption.dataset.price || 0,
+        imageUrl: selectedOption.dataset.image || "https://via.placeholder.com/400x250?text=No+Image",
+        timeSlot: timeSlot,
+        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+      }).then(() => {
+        messageDiv.textContent = "Session booked successfully!";
+        messageDiv.className = "message success";
+        document.getElementById("name").value = "";
+        document.getElementById("roomNumber").value = "";
+        activitySelect.value = "";
+        document.getElementById("timeSlot").value = "";
+        activityPreview.style.display = "none";
+      }).catch(error => {
+        console.error("Error booking session:", error);
+        messageDiv.textContent = "Error booking session. Please try again.";
+        messageDiv.className = "message error";
+      });
+    });
+  </script>
+</body>
+</html>

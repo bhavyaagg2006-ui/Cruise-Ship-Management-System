@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Head-Cook Dashboard</title>
+  <style>
+    body {
+      font-family: "Poppins", sans-serif;
+      margin: 0;
+      padding: 0;
+      background: url("https://images.unsplash.com/photo-1670819916552-67698b1c86ae?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTV8fGNoZWYlMjBraXRjaGVufGVufDB8fDB8fHww") no-repeat center center/cover;
+      color: #fff;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: brightness(0.6);
+    }
+
+    .dashboard {
+      background: rgba(0, 0, 0, 0.7);
+      padding: 40px;
+      border-radius: 20px;
+      text-align: center;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6);
+      max-width: 500px;
+      width: 90%;
+      animation: fadeIn 1.2s ease-in-out;
+    }
+
+    h1 {
+      font-size: 2.2rem;
+      margin-bottom: 10px;
+      color: #f8c146;
+    }
+
+    p {
+      font-size: 1rem;
+      margin-bottom: 30px;
+      color: #f1f1f1;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 15px 30px;
+      background: linear-gradient(135deg, #f8c146, #ff8c42);
+      color: #fff;
+      font-weight: bold;
+      font-size: 1.1rem;
+      border-radius: 50px;
+      text-decoration: none;
+      transition: transform 0.3s, background 0.3s;
+    }
+
+    .btn:hover {
+      transform: scale(1.1);
+      background: linear-gradient(135deg, #ff8c42, #f8c146);
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+  <div class="dashboard">
+    <h1>🍳 Head-Cook Dashboard</h1>
+    <p>Manage catering orders efficiently and keep the kitchen running smoothly!</p>
+    <a href="view_catering_orders.html" class="btn">View Ordered Catering Items</a>
+  </div>
+</body>
+</html>

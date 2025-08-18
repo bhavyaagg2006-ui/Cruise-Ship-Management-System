@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Stationery Orders</title>
+  <style>
+    body { 
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: url("https://images.unsplash.com/photo-1524995997946-a1c2e315a42f") no-repeat center center fixed; 
+      background-size: cover; 
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .container { 
+      background: rgba(255, 255, 255, 0.88);
+      position: center;
+      padding: 20px 30px; 
+      border-radius: 10px; 
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+      max-width: 400px;
+      width: 100%;
+      text-align: center;
+    }
+
+    h1 {
+      margin-bottom: 20px;
+      color: #333;
+    }
+
+    label {
+      display: block;
+      text-align: left;
+      margin-top: 10px;
+      font-weight: bold;
+      color: #333;
+    }
+
+    input, select, button {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 14px;
+    }
+
+    button {
+      background-color: #4CAF50;
+      color: white;
+      cursor: pointer;
+      border: none;
+      font-size: 16px;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+
+    .message {
+      margin-top: 10px;
+      font-weight: bold;
+    }
+
+    .success {
+      color: green;
+    }
+
+    .error {
+      color: red;
+    }
+
+    /* Item preview */
+    .item-preview {
+      margin-top: 15px;
+      text-align: left;
+      display: none;
+    }
+
+    .item-preview img {
+      max-width: 100%;
+      border-radius: 5px;
+      margin-top: 5px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Stationery Orders</h1>
+    <label for="name">Name</label>
+    <input type="text" id="name" placeholder="Enter your name">
+
+    <label for="roomNumber">Room Number</label>
+    <input type="text" id="roomNumber" placeholder="Enter your room number">
+
+    <label for="itemSelect">Select Item</label>
+    <select id="itemSelect">
+      <option value="">--Select an item--</option>
+    </select>
+
+    <label for="quantity">Quantity</label>
+    <input type="number" id="quantity" placeholder="Enter quantity" min="1">
+
+    <!-- Item Preview -->
+    <div id="itemPreview" class="item-preview">
+      <h3 id="previewName"></h3>
+      <p id="previewDescription"></p>
+      <p><strong>Price:</strong> ₹<span id="previewPrice"></span></p>
+      <img id="previewImage" src="" alt="Item image">
+    </div>
+
+    <button id="orderBtn">Place Order</button>
+    <div id="message" class="message"></div>
+  </div>
+
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyD0cA756dZeVEbR4Vqovsh5p74niMxNT3w",
+      authDomain: "cruise-ship-management-s-98138.firebaseapp.com",
+      projectId: "cruise-ship-management-s-98138",
+      storageBucket: "cruise-ship-management-s-98138.appspot.com",
+      messagingSenderId: "401246402444",
+      appId: "1:401246402444:web:dd8a21a7e144e90d3788a9"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    const itemSelect = document.getElementById("itemSelect");
+    const orderBtn = document.getElementById("orderBtn");
+    const messageDiv = document.getElementById("message");
+
+    const itemPreview = document.getElementById("itemPreview");
+    const previewName = document.getElementById("previewName");
+    const previewDescription = document.getElementById("previewDescription");
+    const previewPrice = document.getElementById("previewPrice");
+    const previewImage = document.getElementById("previewImage");
+    const placeholderImage = "https://via.placeholder.com/300x200?text=No+Image";
+    // Load stationery items
+    db.collection("stationeryItems").get().then(snapshot => {
+      snapshot.forEach(doc => {
+        const data = doc.data();
+        const option = document.createElement("option");
+        option.value = doc.id;
+        option.textContent = data.itemName;
+        option.dataset.itemName = data.itemName;
+        option.dataset.description = data.description;
+        option.dataset.price = data.price;
+        option.dataset.image = data.imageUrl || placeholderImage;
+        itemSelect.appendChild(option);
+      });
+    });
+
+    // Show preview on select change
+    itemSelect.addEventListener("change", function() {
+      const selected = this.options[this.selectedIndex];
+      if (selected.value) {
+        previewName.textContent = selected.textContent;
+        previewDescription.textContent = selected.dataset.description || "No description available";
+        previewPrice.textContent = selected.dataset.price || "N/A";
+        previewImage.src = (selected.dataset.image || "").trim();
+        itemPreview.style.display = "block";
+      } else {
+        itemPreview.style.display = "none";
+      }
+    });
+
+    // Order button click
+    orderBtn.addEventListener("click", () => {
+      const name = document.getElementById("name").value.trim();
+      const roomNumber = document.getElementById("roomNumber").value.trim();
+      const selectedOption = itemSelect.options[itemSelect.selectedIndex];
+
+      if (!name || !roomNumber || !selectedOption.value) {
+        messageDiv.textContent = "Please fill in all fields.";
+        messageDiv.className = "message error";
+        return;
+      }
+
+      db.collection("stationeryOrders").add({
+        name,
+        roomNumber,
+        itemName: selectedOption.dataset.itemName || "",
+        description: selectedOption.dataset.description || "",
+        price: selectedOption.dataset.price || "",
+        imageUrl: selectedOption.dataset.image || "",
+        quantity: document.getElementById("quantity").value || 1,
+        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+      }).then(() => {
+        messageDiv.textContent = "Item booked successfully!";
+        messageDiv.className = "message success";
+        document.getElementById("name").value = "";
+        document.getElementById("roomNumber").value = "";
+        itemSelect.value = "";
+        itemPreview.style.display = "none";
+      }).catch(error => {
+        console.error("Error booking item:", error);
+        messageDiv.textContent = "Error booking item. Please try again.";
+        messageDiv.className = "message error";
+      });
+    });
+  </script>
+</body>
+</html>

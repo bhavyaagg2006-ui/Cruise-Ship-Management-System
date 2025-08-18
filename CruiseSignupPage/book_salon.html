@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Book Salon Service</title>
+  <style>
+    body { 
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: url("https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D") no-repeat center center fixed; 
+      background-size: cover; 
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .container { 
+      background: rgba(255, 255, 255, 0.9);
+      padding: 20px 30px; 
+      border-radius: 12px; 
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+      max-width: 420px;
+      width: 100%;
+    }
+    h1 {
+      text-align: center;
+      color: #333;
+    }
+    label {
+      display: block;
+      margin-top: 10px;
+      font-weight: bold;
+      color: #333;
+    }
+    input, select, button {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 14px;
+    }
+    button {
+      background-color: #b76e79;
+      color: white;
+      cursor: pointer;
+      border: none;
+      font-size: 16px;
+    }
+    button:hover {
+      background-color: #9c5b64;
+    }
+    .message {
+      margin-top: 10px;
+      font-weight: bold;
+      text-align: center;
+    }
+    .success { color: green; }
+    .error { color: red; }
+    img {
+      width: 100%;
+      border-radius: 8px;
+      margin-top: 10px;
+    }
+    .preview {
+      display: none;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Book Salon Service</h1>
+    
+    <label for="name">Name</label>
+    <input type="text" id="name" placeholder="Enter your name"/>
+
+    <label for="roomNumber">Room Number</label>
+    <input type="text" id="roomNumber" placeholder="Enter your room number"/>
+
+    <label for="timeSlot">Preferred Time Slot</label>
+    <select id="timeSlot">
+      <option value="">--Select time--</option>
+      <option value="Morning(9AM-12PM)">Morning(9AM-12PM)</option>
+      <option value="Midday(12PM-4PM)">Midday(12PM-4PM)</option>
+      <option value="Evening(4PM-8PM)">Evening(4PM-8PM)</option>
+    </select>
+
+    <label for="serviceSelect">Select Service</label>
+    <select id="serviceSelect">
+      <option value="">--Select a service--</option>
+    </select>
+
+    <div class="preview" id="servicePreview">
+      <h3 id="previewName"></h3>
+      <p id="previewDescription"></p>
+      <p><strong>Price:</strong> ₹<span id="previewPrice"></span></p>
+      <img id="previewImage" src="" alt="Service Image"/>
+    </div>
+
+    <button id="bookBtn">Book Now</button>
+
+    <div id="message" class="message"></div>
+  </div>
+
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyD0cA756dZeVEbR4Vqovsh5p74niMxNT3w",
+      authDomain: "cruise-ship-management-s-98138.firebaseapp.com",
+      projectId: "cruise-ship-management-s-98138",
+      storageBucket: "cruise-ship-management-s-98138.appspot.com",
+      messagingSenderId: "401246402444",
+      appId: "1:401246402444:web:dd8a21a7e144e90d3788a9"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    const serviceSelect = document.getElementById("serviceSelect");
+    const servicePreview = document.getElementById("servicePreview");
+    const previewName = document.getElementById("previewName");
+    const previewDescription = document.getElementById("previewDescription");
+    const previewPrice = document.getElementById("previewPrice");
+    const previewImage = document.getElementById("previewImage");
+    const messageDiv = document.getElementById("message");
+
+    // Load salon services from Firestore
+    db.collection("salonServices").get().then(snapshot => {
+      snapshot.forEach(doc => {
+        const data = doc.data();
+        const option = document.createElement("option");
+        option.value = doc.id;
+        option.textContent = data.serviceName;
+        option.dataset.description = data.description || "";
+        option.dataset.price = data.price || "";
+        option.dataset.image = data.imageUrl || "";
+        serviceSelect.appendChild(option);
+      });
+    });
+
+    // Show preview on service selection
+    serviceSelect.addEventListener("change", () => {
+      const selectedOption = serviceSelect.options[serviceSelect.selectedIndex];
+      if (selectedOption.value) {
+        previewName.textContent = selectedOption.textContent;
+        previewDescription.textContent = selectedOption.dataset.description;
+        previewPrice.textContent = selectedOption.dataset.price;
+        previewImage.src = selectedOption.dataset.image || "https://via.placeholder.com/400x250?text=No+Image";
+        servicePreview.style.display = "block";
+      } else {
+        servicePreview.style.display = "none";
+      }
+    });
+
+    // Book service
+    document.getElementById("bookBtn").addEventListener("click", () => {
+      const name = document.getElementById("name").value.trim();
+      const roomNumber = document.getElementById("roomNumber").value.trim();
+      const serviceId = serviceSelect.value;
+      const timeSlot = document.getElementById("timeSlot").value;
+
+      if (!name || !roomNumber || !serviceId || !timeSlot) {
+        messageDiv.textContent = "Please fill in all fields.";
+        messageDiv.className = "message error";
+        return;
+      }
+
+      db.collection("salonBookings").add({
+        name: name,
+        roomNumber: roomNumber,
+        serviceName: serviceSelect.options[serviceSelect.selectedIndex].textContent,
+        description: serviceSelect.options[serviceSelect.selectedIndex].dataset.description || "",
+        price: serviceSelect.options[serviceSelect.selectedIndex].dataset.price || 0,
+        imageUrl: serviceSelect.options[serviceSelect.selectedIndex].dataset.image || "https://via.placeholder.com/400x250?text=No+Image",
+        timeSlot: timeSlot,
+        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+      }).then(() => {
+        messageDiv.textContent = "Service booked successfully!";
+        messageDiv.className = "message success";
+        document.getElementById("name").value = "";
+        document.getElementById("roomNumber").value = "";
+        serviceSelect.value = "";
+        timeSlot.value = "";
+        servicePreview.style.display = "none";
+      }).catch(error => {
+        console.error("Error booking service:", error);
+        messageDiv.textContent = "Error booking service. Please try again.";
+        messageDiv.className = "message error";
+      });
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Supervisor • Stationery Orders</title>
+
+  <!-- Firebase (compat to match your other pages) -->
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+
+  <style>
+    :root{
+      --green-dark:#14532d; /* dark green for headers */
+      --green:#166534; /* medium green for accents */
+      --green-mid:#22c55e; /* vivid green highlight */
+      --green-light:#e9f9ef; /* light green bg */
+      --text-dark:#0b130e;
+      --text-light:#f6fff9;
+      --card-bg: rgba(255,255,255,0.92);
+      --glass: rgba(255,255,255,0.18);
+    }
+
+    *{ box-sizing:border-box; }
+
+    body{
+      margin:0;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(140deg, #f0fff4, #d1fae5 45%, #a7f3d0 80%);
+      min-height:100vh;
+      display:flex;
+      align-items:flex-start;
+      justify-content:center;
+      padding:40px 18px;
+      color:var(--text-dark);
+    }
+
+    .wrap{
+      width:100%;
+      max-width:1200px;
+    }
+
+    .titlebar{
+      background: linear-gradient(120deg, var(--green-dark), var(--green));
+      color:var(--text-light);
+      padding:18px 22px;
+      border-radius:16px;
+      box-shadow: 0 10px 30px rgba(20,83,45,0.25);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+    }
+    .titlebar h1{
+      margin:0;
+      font-size:1.6rem;
+      letter-spacing:.4px;
+    }
+    .badge{
+      background: var(--green-mid);
+      color:#063a1d;
+      padding:6px 10px;
+      border-radius:999px;
+      font-size:.85rem;
+      font-weight:700;
+      box-shadow: 0 4px 10px rgba(34,197,94,.35);
+    }
+
+    .card{
+      margin-top:16px;
+      background:var(--card-bg);
+      border-radius:16px;
+      box-shadow: 0 8px 24px rgba(0,0,0,.12);
+      overflow:hidden;
+      backdrop-filter: blur(6px);
+    }
+
+    .table-wrap{
+      width:100%;
+      overflow:auto;
+    }
+
+    table{
+      width:100%;
+      border-collapse:collapse;
+      min-width:980px;
+    }
+
+    thead th{
+      position:sticky;
+      top:0;
+      background: linear-gradient(120deg, var(--green-dark), #0f5130);
+      color:var(--text-light);
+      text-transform:uppercase;
+      letter-spacing:.6px;
+      font-size:.83rem;
+      padding:14px 12px;
+      text-align:center;
+    }
+
+    tbody td{
+      padding:14px 12px;
+      border-bottom:1px solid #e6f4ea;
+      text-align:center;
+      vertical-align:middle;
+      background:#ffffff;
+    }
+
+    tbody tr:nth-child(even) td{
+      background: var(--green-light);
+    }
+
+    tbody tr:hover td{
+      background:#dff7e8;
+    }
+
+    .thumb{
+      width:64px; height:64px;
+      object-fit:cover;
+      border-radius:10px;
+      box-shadow:0 3px 10px rgba(0,0,0,.15);
+      background:#f1f5f1;
+    }
+
+    .muted{ color:#647a69; font-size:.92rem; }
+    .price{ font-weight:700; color:#0b6b32; }
+    .empty{
+      padding:24px;
+      text-align:center;
+      color:#274536;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="titlebar">
+      <h1>📗 Supervisor — Stationery Orders</h1>
+      <span id="countBadge" class="badge">Loading…</span>
+    </div>
+
+    <div class="card">
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Customer</th>
+              <th>Room</th>
+              <th>Item</th>
+              <th>Description</th>
+              <th>Image</th>
+              <th>Price</th>
+              <th>Qty</th>
+              <th>Ordered At</th>
+            </tr>
+          </thead>
+          <tbody id="ordersBody">
+            <tr><td class="empty" colspan="8">Loading orders…</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Your Firebase config (same project you’ve been using)
+    const firebaseConfig = {
+      apiKey: "AIzaSyD0cA756dZeVEbR4Vqovsh5p74niMxNT3w",
+      authDomain: "cruise-ship-management-s-98138.firebaseapp.com",
+      projectId: "cruise-ship-management-s-98138",
+      storageBucket: "cruise-ship-management-s-98138.appspot.com",
+      messagingSenderId: "401246402444",
+      appId: "1:401246402444:web:dd8a21a7e144e90d3788a9"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    const tbody = document.getElementById('ordersBody');
+    const countBadge = document.getElementById('countBadge');
+    const placeholder = "https://via.placeholder.com/120?text=No+Image";
+
+    // Live updates
+    db.collection('stationeryOrders')
+      .orderBy('timestamp', 'desc')
+      .onSnapshot((snap)=>{
+        tbody.innerHTML = '';
+        if (snap.empty) {
+          tbody.innerHTML = `<tr><td class="empty" colspan="8">No stationery orders yet.</td></tr>`;
+          countBadge.textContent = "0 orders";
+          return;
+        }
+        countBadge.textContent = `${snap.size} order${snap.size>1?'s':''}`;
+
+        snap.forEach(doc=>{
+          const d = doc.data();
+
+          // Handle Firestore Timestamp (compat)
+          let when = '-';
+          try {
+            if (d.timestamp && typeof d.timestamp.toDate === 'function') {
+              when = new Date(d.timestamp.toDate()).toLocaleString();
+            } else if (d.timestamp) {
+              when = new Date(d.timestamp).toLocaleString();
+            }
+          } catch(e){ when = '-'; }
+
+          const row = document.createElement('tr');
+          row.innerHTML = `
+            <td>${d.name ?? '-'}</td>
+            <td>${d.roomNumber ?? '-'}</td>
+            <td><strong>${d.itemName ?? '-'}</strong></td>
+            <td class="muted">${d.description ?? '-'}</td>
+            <td><img class="thumb" src="${(d.imageUrl||'').trim()||placeholder}" alt="item"></td>
+            <td class="price">₹${d.price ?? '-'}</td>
+            <td>${d.quantity ?? '-'}</td>
+            <td>${when}</td>
+          `;
+          tbody.appendChild(row);
+        });
+      }, (err)=>{
+        console.error(err);
+        tbody.innerHTML = `<tr><td class="empty" colspan="8">Error loading orders.</td></tr>`;
+        countBadge.textContent = "Error";
+      });
+  </script>
+</body>
+</html>

@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Book Movie / Resort</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: url("https://images.unsplash.com/photo-1610641818989-c2051b5e2cfd?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D") no-repeat center center fixed;
+      background-size: cover;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .container {
+      background: rgba(255,255,255,0.90);
+      padding: 22px 28px;
+      border-radius: 10px;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.25);
+      max-width: 480px;
+      width: 100%;
+    }
+    h1 {
+      margin: 0 0 14px 0;
+      color: #222;
+      text-align: center;
+    }
+    label {
+      display:block;
+      margin-top:10px;
+      font-weight:600;
+      color:#333;
+    }
+    input, select, button {
+      width:100%;
+      padding:10px;
+      margin-top:6px;
+      margin-bottom:14px;
+      border:1px solid #ccc;
+      border-radius:6px;
+      font-size:14px;
+      box-sizing: border-box;
+    }
+    button {
+      background:#1976d2;
+      color:#fff;
+      border:none;
+      font-weight:700;
+      cursor:pointer;
+    }
+    button:hover { background:#135fa8; }
+    #itemPreview { 
+      display:none; 
+      margin-top:6px; 
+      background:#fff; 
+      padding:10px; 
+      border-radius:6px; 
+      border:1px solid #eee; 
+      text-align:center;
+    }
+    #itemPreview p { margin:6px 0; color:#333; }
+    #previewImage { 
+      max-width: 100%; 
+      max-height: 200px; 
+      border-radius:6px; 
+      margin-bottom:10px; 
+      object-fit:cover; 
+    }
+    .message { margin-top:8px; text-align:center; font-weight:600; }
+    .success { color:green; }
+    .error { color:#c0392b; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Book Resort</h1>
+
+    <label for="name">Name</label>
+    <input id="name" type="text" placeholder="Enter your name" />
+
+    <label for="room">Room Number</label>
+    <input id="room" type="text" placeholder="Enter your room number" />
+
+    <label for="bookingDate">Select Date</label>
+    <input id="bookingDate" type="date" />
+
+    <label for="timeSlot">Preferred Time Slot</label>
+    <select id="timeSlot">
+      <option value="">-- Select time slot --</option>
+      <option value="Morning(9AM - 12PM)">Morning (9AM - 12PM)</option>
+      <option value="Afternoon(12PM - 4PM)">Afternoon (12PM - 4PM)</option>
+      <option value="Evening(4PM - 8PM)">Evening (4PM - 8PM)</option>
+      <option value="Night(8PM - 11PM)">Night (8PM - 11PM)</option>
+    </select>
+
+    <label for="itemSelect">Select Resort Option</label>
+    <select id="itemSelect">
+      <option value="">-- Loading options... --</option>
+    </select>
+
+    <div id="itemPreview">
+      <img id="previewImage" src="" alt="Preview" />
+      <h4 id="previewName" style="margin:0 0 6px 0;"></h4>
+      <p id="previewDescription"></p>
+      <p><strong>Price:</strong> ₹<span id="previewPrice"></span></p>
+    </div>
+
+    <button id="bookBtn">Place Booking</button>
+    <div id="message" class="message"></div>
+  </div>
+
+  <!-- Firebase (compat) -->
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyD0cA756dZeVEbR4Vqovsh5p74niMxNT3w",
+      authDomain: "cruise-ship-management-s-98138.firebaseapp.com",
+      projectId: "cruise-ship-management-s-98138",
+      storageBucket: "cruise-ship-management-s-98138.appspot.com",
+      messagingSenderId: "401246402444",
+      appId: "1:401246402444:web:dd8a21a7e144e90d3788a9"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    const itemSelect = document.getElementById('itemSelect');
+    const previewName = document.getElementById('previewName');
+    const previewDescription = document.getElementById('previewDescription');
+    const previewPrice = document.getElementById('previewPrice');
+    const previewImage = document.getElementById('previewImage');
+    const itemPreview = document.getElementById('itemPreview');
+    const messageDiv = document.getElementById('message');
+
+    const placeholderImage = "https://via.placeholder.com/400x200?text=No+Image";
+
+    db.collection('movieResortItems').get()
+      .then(snapshot => {
+        itemSelect.innerHTML = '<option value="">-- Select an option --</option>';
+        snapshot.forEach(doc => {
+          const d = doc.data();
+          const opt = document.createElement('option');
+          opt.value = doc.id;
+          opt.textContent = d.itemName || "Unnamed";
+          opt.dataset.description = d.description || "";
+          opt.dataset.price = d.price || "";
+          opt.dataset.image = d.imageUrl || "";
+          itemSelect.appendChild(opt);
+        });
+      })
+      .catch(err => {
+        console.error('Error loading items:', err);
+        itemSelect.innerHTML = '<option value="">Unable to load options</option>';
+      });
+
+    itemSelect.addEventListener('change', () => {
+      const sel = itemSelect.options[itemSelect.selectedIndex];
+      if (!sel || !sel.value) {
+        itemPreview.style.display = 'none';
+        return;
+      }
+      previewName.textContent = sel.textContent;
+      previewDescription.textContent = sel.dataset.description || "No description available.";
+      previewPrice.textContent = sel.dataset.price || "N/A";
+      previewImage.src = sel.dataset.image || placeholderImage;
+      itemPreview.style.display = 'block';
+      messageDiv.textContent = '';
+      messageDiv.className = 'message';
+    });
+
+    document.getElementById('bookBtn').addEventListener('click', () => {
+      const name = document.getElementById('name').value.trim();
+      const room = document.getElementById('room').value.trim();
+      const date = document.getElementById('bookingDate').value;
+      const timeSlot = document.getElementById('timeSlot').value;
+      const sel = itemSelect.options[itemSelect.selectedIndex];
+
+      if (!name || !room || !date || !sel || !sel.value) {
+        messageDiv.textContent = 'Please fill all fields and select an option.';
+        messageDiv.className = 'message error';
+        return;
+      }
+
+      const booking = {
+        customerName: name,
+        roomNumber: room,
+        bookingDate: date,
+        timeSlot: timeSlot,
+        itemId: sel.value,
+        itemName: sel.textContent,
+        description: sel.dataset.description || "",
+        price: sel.dataset.price || "",
+        imageUrl: sel.dataset.image || placeholderImage,
+        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+      };
+
+      db.collection('movieResortBookings').add(booking)
+        .then(() => {
+          messageDiv.textContent = 'Booking successful!';
+          messageDiv.className = 'message success';
+          document.getElementById('name').value = '';
+          document.getElementById('room').value = '';
+          document.getElementById('bookingDate').value = '';
+          itemSelect.value = '';
+          itemPreview.style.display = 'none';
+        })
+        .catch(err => {
+          console.error('Booking error:', err);
+          messageDiv.textContent = 'Booking failed — try again.';
+          messageDiv.className = 'message error';
+        });
+    });
+  </script>
+</body>
+</html>

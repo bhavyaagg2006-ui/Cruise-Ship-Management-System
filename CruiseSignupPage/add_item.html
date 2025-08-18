@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Add Item</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/milligram/1.4.1/milligram.min.css">
+  <style>
+    body { 
+      font-family: Arial, sans-serif;
+      color: rgba(0, 0, 0, 0.662);
+      margin: 0;
+      padding: 0;
+      background: url("https://images.unsplash.com/photo-1511316695145-4992006ffddb?q=80&w=1169&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D9Y8n34ROybXl5BkPY29FBPFO.jpg") no-repeat center center fixed; 
+      background-size: cover; 
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .container {
+      max-width: 600px;
+      margin: auto;
+      background: rgba(255, 255, 255, 0.9);
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
+    }
+    img {
+      max-width: 100%;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Add New Item</h2>
+    
+    <label for="category">Select Category</label>
+    <select id="category">
+      <option value="">-- Select --</option>
+      <option value="cateringItems">Catering</option>
+      <option value="fitnessSessions">Fitness</option>
+      <option value="movieResortItems">Movie Resort</option>
+      <option value="partyHallItems">Party Hall</option>
+      <option value="salonServices">Salon</option>
+      <option value="stationeryItems">Stationery</option>
+    </select>
+
+    <label id="nameLabel">Item Name</label>
+    <input type="text" id="itemName" placeholder="Enter name" />
+
+    <label>Description</label>
+    <textarea id="description" placeholder="Enter description"></textarea>
+
+    <label>Price</label>
+    <input type="number" id="price" placeholder="Enter price" />
+
+    <label>Image</label>
+    <input type="file" id="imageUpload" accept="image/*" />
+    <img id="previewImage" />
+
+    <button id="saveBtn">Save Item</button>
+  </div>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
+
+  <script>
+    // Firebase config
+    const firebaseConfig = {
+      apiKey: "AIzaSyD0cA756dZeVEbR4Vqovsh5p74niMxNT3w",
+      authDomain: "cruise-ship-management-s-98138.firebaseapp.com",
+      projectId: "cruise-ship-management-s-98138",
+      storageBucket: "cruise-ship-management-s-98138.firebasestorage.app",
+      messagingSenderId: "401246402444",
+      appId: "1:401246402444:web:dd8a21a7e144e90d3788a9",
+      measurementId: "G-29GKF5F9SS"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    const categorySelect = document.getElementById('category');
+    const nameLabel = document.getElementById('nameLabel');
+    const saveBtn = document.getElementById('saveBtn');
+    const imageUpload = document.getElementById('imageUpload');
+    const previewImage = document.getElementById('previewImage');
+    let imageBase64 = "";
+
+    // Change label dynamically
+    categorySelect.addEventListener('change', () => {
+      const cat = categorySelect.value;
+      if (cat === "fitnessSessions") {
+        nameLabel.innerText = "Activity Name";
+      } else if (cat === "salonServices") {
+        nameLabel.innerText = "Service Name";
+      } else if (cat === "partyHallItems") {
+        nameLabel.innerText = "Hall Name";
+      } else {
+        nameLabel.innerText = "Item Name";
+      }
+    });
+
+    // Preview and convert image to Base64
+    imageUpload.addEventListener('change', () => {
+      const file = imageUpload.files[0];
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        imageBase64 = reader.result;
+        previewImage.src = imageBase64;
+        previewImage.style.display = "block";
+      };
+      if (file) reader.readAsDataURL(file);
+    });
+
+    // Save item to Firestore
+    saveBtn.addEventListener('click', async () => {
+      const category = categorySelect.value;
+      const name = document.getElementById('itemName').value.trim();
+      const description = document.getElementById('description').value.trim();
+      const price = parseFloat(document.getElementById('price').value);
+
+      if (!category || !name || !description || !price || !imageBase64) {
+        alert("Please fill all fields and select an image.");
+        return;
+      }
+
+      let data = {
+        description: description,
+        imageUrl: imageBase64,
+        price: price
+      };
+
+      // Dynamic field key
+      if (category === "fitnessSessions") {
+        data.activity = name;
+      } else if (category === "salonServices") {
+        data.serviceName = name;
+      } else if (category === "partyHallItems") {
+        data.hallName = name;
+      } else {
+        data.itemName = name;
+      }
+
+      try {
+        await db.collection(category).add(data);
+        alert("Item added successfully!");
+        document.getElementById('itemName').value = "";
+        document.getElementById('description').value = "";
+        document.getElementById('price').value = "";
+        imageUpload.value = "";
+        previewImage.style.display = "none";
+      } catch (error) {
+        console.error("Error adding document: ", error);
+        alert("Error adding item.");
+      }
+    });
+  </script>
+</body>
+</html>

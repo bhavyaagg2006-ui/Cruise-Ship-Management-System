@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>View Party Hall Orders</title>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+  
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(120deg, #d9f0ff, #fdfdfd);
+      min-height: 100vh;
+      color: #333;
+    }
+    header {
+      background: #0077b6;
+      padding: 18px;
+      text-align: center;
+      color: white;
+      font-size: 26px;
+      font-weight: bold;
+      letter-spacing: 1px;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.2);
+    }
+    .container {
+      width: 90%;
+      max-width: 1200px;
+      margin: 40px auto;
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 5px 18px rgba(0,0,0,0.15);
+      padding: 25px;
+      overflow-x: auto;
+    }
+    h2 {
+      margin-bottom: 20px;
+      color: #023e8a;
+      text-align: center;
+      font-size: 22px;
+      font-weight: 600;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    th, td {
+      padding: 14px 18px;
+      text-align: center;
+    }
+    th {
+      background: #0096c7;
+      color: white;
+      font-size: 15px;
+      text-transform: uppercase;
+    }
+    tr:nth-child(even) {
+      background: #f2faff;
+    }
+    tr:hover {
+      background: #caf0f8;
+      transition: 0.3s;
+    }
+    td img {
+      width: 90px;
+      height: 70px;
+      object-fit: cover;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    }
+    .empty {
+      text-align: center;
+      font-size: 18px;
+      color: #666;
+      padding: 40px;
+    }
+  </style>
+</head>
+<body>
+  <header>Manager Dashboard - Party Hall Orders</header>
+  <div class="container">
+    <h2>All Party Hall Bookings</h2>
+    <table id="ordersTable">
+      <thead>
+        <tr>
+          <th>Image</th>
+          <th>Hall Name</th>
+          <th>Description</th>
+          <th>Price</th>
+          <th>Voyager Name</th>
+          <th>Room Number</th>
+          <th>Date</th>
+          <th>Time Slot</th>
+          <th>Booking Time</th>
+        </tr>
+      </thead>
+      <tbody id="ordersBody">
+        <tr><td colspan="9" class="empty">Loading orders...</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <script>
+    // Firebase config (replace with yours)
+    const firebaseConfig = {
+      apiKey: "AIzaSyD0cA756dZeVEbR4Vqovsh5p74niMxNT3w",
+      authDomain: "cruise-ship-management-s-98138.firebaseapp.com",
+      projectId: "cruise-ship-management-s-98138",
+      storageBucket: "cruise-ship-management-s-98138.appspot.com",
+      messagingSenderId: "401246402444",
+      appId: "1:401246402444:web:dd8a21a7e144e90d3788a9"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    async function loadOrders() {
+      const ordersBody = document.getElementById("ordersBody");
+      ordersBody.innerHTML = "";
+
+      try {
+        const querySnapshot = await db.collection("partyHallOrders").orderBy("timestamp", "desc").get();
+
+        if (querySnapshot.empty) {
+          ordersBody.innerHTML = `<tr><td colspan="9" class="empty">No orders found</td></tr>`;
+          return;
+        }
+
+        querySnapshot.forEach(doc => {
+          const order = doc.data();
+          const row = document.createElement("tr");
+
+          row.innerHTML = `
+            <td><img src="${order.imageUrl || 'https://via.placeholder.com/90'}" alt="Hall Image"></td>
+            <td>${order.hallName || '-'}</td>
+            <td>${order.description || '-'}</td>
+            <td>₹${order.price || '250000'}</td>
+            <td>${order.name || '-'}</td>
+            <td>${order.roomNumber || '-'}</td>
+            <td>${order.bookingDate || '-'}</td>
+            <td>${order.timeSlot || '-'}</td>
+            <td>${order.timestamp ? new Date(order.timestamp.toDate()).toLocaleString() : '-'}</td>
+          `;
+          ordersBody.appendChild(row);
+        });
+      } catch (error) {
+        console.error("Error fetching orders:", error);
+        ordersBody.innerHTML = `<tr><td colspan="9" class="empty">Error loading orders</td></tr>`;
+      }
+    }
+
+    loadOrders();
+  </script>
+</body>
+</html>

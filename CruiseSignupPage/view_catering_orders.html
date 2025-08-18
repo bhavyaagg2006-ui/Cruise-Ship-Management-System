@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>View Catering Orders</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #ffecd2, #fcb69f);
+      color: #333;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+    .container {
+      background: #fff;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+      max-width: 1100px;
+      width: 100%;
+      overflow-x: auto;
+    }
+    h2 {
+      text-align: center;
+      color: #e67e22;
+      margin-bottom: 25px;
+      font-size: 28px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+    th, td {
+      padding: 12px;
+      text-align: center;
+      border-bottom: 1px solid #ddd;
+      font-size: 15px;
+    }
+    th {
+      background: #e67e22;
+      color: white;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    tr:hover {
+      background: #fdf2e9;
+    }
+    img {
+      width: 60px;
+      height: 60px;
+      border-radius: 8px;
+      object-fit: cover;
+    }
+    .loading {
+      text-align: center;
+      color: #555;
+      font-size: 18px;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>🍽 Catering Orders</h2>
+    <div id="loading" class="loading">Loading orders...</div>
+    <table id="ordersTable" style="display:none;">
+      <thead>
+        <tr>
+          <th>Image</th>
+          <th>Item</th>
+          <th>Description</th>
+          <th>Price</th>
+          <th>Quantity</th>
+          <th>Ordered By</th>
+          <th>Room</th>
+          <th>Date</th>
+        </tr>
+      </thead>
+      <tbody id="ordersBody"></tbody>
+    </table>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+    // Firebase config 
+    const firebaseConfig = {
+      apiKey: "AIzaSyD0cA756dZeVEbR4Vqovsh5p74niMxNT3w",
+      authDomain: "cruise-ship-management-s-98138.firebaseapp.com",
+      projectId: "cruise-ship-management-s-98138",
+      storageBucket: "cruise-ship-management-s-98138.appspot.com",
+      messagingSenderId: "401246402444",
+      appId: "1:401246402444:web:dd8a21a7e144e90d3788a9"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    async function loadOrders() {
+      const ordersTable = document.getElementById("ordersTable");
+      const ordersBody = document.getElementById("ordersBody");
+      const loading = document.getElementById("loading");
+
+      try {
+        const querySnapshot = await getDocs(collection(db, "cateringOrders"));
+        loading.style.display = "none";
+        ordersTable.style.display = "table";
+
+        if (querySnapshot.empty) {
+          ordersBody.innerHTML = `<tr><td colspan="8">No orders found</td></tr>`;
+          return;
+        }
+
+        querySnapshot.forEach(doc => {
+          const order = doc.data();
+          const row = `
+            <tr>
+              <td><img src="${order.imageUrl || ""}" alt="img"></td>
+              <td>${order.itemName || "-"}</td>
+              <td>${order.description || "-"}</td>
+              <td>₹${order.price || 0}</td>
+              <td>${order.quantity || 0}</td>
+              <td>${order.name || "Unknown"}</td>
+              <td>${order.roomNumber || "-"}</td>
+              <td>${order.timestamp ? new Date(order.timestamp.seconds * 1000).toLocaleString() : "-"}</td>
+            </tr>
+          `;
+          ordersBody.innerHTML += row;
+        });
+      } catch (error) {
+        loading.innerText = "Error loading orders!";
+        console.error(error);
+      }
+    }
+
+    loadOrders();
+  </script>
+</body>
+</html>

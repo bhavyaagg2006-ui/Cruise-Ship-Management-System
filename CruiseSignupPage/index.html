@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Cruise Ship Management</title>
+</head>
+<body>
+  <h1>Welcome to Cruise Ship Management</h1>
+
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-analytics.js"></script>
+
+  <!-- Firebase Config and Init -->
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyD0cA75dZeVEbR4Vqovsh5p74niMxNT3w",
+      authDomain: "cruise-ship-management-s-98138.firebaseapp.com",
+      projectId: "cruise-ship-management-s-98138",
+      storageBucket: "cruise-ship-management-s-98138.appspot.com",
+      messagingSenderId: "401246402444",
+      appId: "1:401246402444:web:dd8a21a7e144e90d3788a9",
+      measurementId: "G-29KGF5FS9S"
+    };
+
+    const app = firebase.initializeApp(firebaseConfig);
+    const analytics = firebase.analytics(app);
+  </script>
+</body>
+</html>

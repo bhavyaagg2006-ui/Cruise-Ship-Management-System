@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Book Party Hall</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background: url("https://images.unsplash.com/photo-1510076857177-7470076d4098?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8d2VkZGluZyUyMHZlbnVlfGVufDB8fDB8fHww") no-repeat center center fixed;
+    background-size: cover;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
+  .container {
+    background: rgba(255, 255, 255, 0.9);
+    padding: 20px 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    max-width: 500px;
+    width: 100%;
+    text-align: center;
+  }
+  h1 { color: #333; margin-bottom: 20px; }
+  label {
+    display: block;
+    text-align: left;
+    margin-top: 10px;
+    font-weight: bold;
+    color: #333;
+  }
+  input, select, button {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+  }
+  button {
+    background-color: #8f5317;
+    color: white;
+    cursor: pointer;
+    border: none;
+    font-size: 16px;
+  }
+  button:hover { background-color: #6a2f0a; }
+  .message { margin-top: 10px; font-weight: bold; }
+  .success { color: green; }
+  .error { color: red; }
+  .item-details {
+    text-align: left;
+    margin-top: 15px;
+    background: #f9f9f9;
+    padding: 10px;
+    border-radius: 8px;
+  }
+  .item-details img {
+    max-width: 100%;
+    border-radius: 8px;
+    margin-top: 10px;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>Book Party Hall</h1>
+  
+  <label for="name">Your Name</label>
+  <input type="text" id="name" placeholder="Enter your name">
+
+  <label for="roomNumber">Room Number</label>
+  <input type="text" id="roomNumber" placeholder="Enter your room number">
+
+  <label for="hallSelect">Select Party Hall</label>
+  <select id="hallSelect">
+    <option value="">--Select a hall--</option>
+  </select>
+
+  <div class="item-details" id="hallDetails" style="display:none;">
+    <p><strong>Description:</strong> <span id="hallDescription"></span></p>
+    <p><strong>Price:</strong> ₹<span id="hallPrice"></span></p>
+    <img id="hallImage" src="https://via.placeholder.com/400x200" alt="Hall Image">
+  </div>
+
+  <label for="bookingDate">Booking Date</label>
+  <input type="date" id="bookingDate">
+
+  <label for="timeSlot">Preferred Time Slot</label>
+  <select id="timeSlot">
+    <option value="">--Select Time Slot--</option>
+    <option value="Morning(8AM-12PM)">Morning (8 AM - 12 PM)</option>
+    <option value="Midday(12PM-4PM)">Midday (12 PM - 4 PM)</option>
+    <option value="Evening(4PM-8PM)">Evening (4 PM - 8 PM)</option>
+  </select>
+
+  <button id="bookBtn">Book Now</button>
+  <div id="message" class="message"></div>
+</div>
+
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+<script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyD0cA756dZeVEbR4Vqovsh5p74niMxNT3w",
+    authDomain: "cruise-ship-management-s-98138.firebaseapp.com",
+    projectId: "cruise-ship-management-s-98138",
+    storageBucket: "cruise-ship-management-s-98138.appspot.com",
+    messagingSenderId: "401246402444",
+    appId: "1:401246402444:web:dd8a21a7e144e90d3788a9"
+  };
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
+
+  const hallSelect = document.getElementById("hallSelect");
+  const hallDetails = document.getElementById("hallDetails");
+  const hallDescription = document.getElementById("hallDescription");
+  const hallPrice = document.getElementById("hallPrice");
+  const hallImage = document.getElementById("hallImage");
+  const messageDiv = document.getElementById("message");
+
+  let hallDataMap = {};
+
+  // Load halls from Firestore
+  db.collection("partyHallItems").get().then(snapshot => {
+    snapshot.forEach(doc => {
+      const data = doc.data();
+      hallDataMap[data.hallName] = data;
+      const option = document.createElement("option");
+      option.value = data.hallName;
+      option.textContent = data.hallName;
+      hallSelect.appendChild(option);
+    });
+  });
+
+  // Show details on selection
+  hallSelect.addEventListener("change", () => {
+    const selected = hallSelect.value;
+    if (selected && hallDataMap[selected]) {
+      const hall = hallDataMap[selected];
+      hallDescription.textContent = hall.description || "No description";
+      hallPrice.textContent = hall.price || "N/A";
+      hallImage.src = hall.imageUrl || "https://via.placeholder.com/400x200";
+      hallDetails.style.display = "block";
+    } else {
+      hallDetails.style.display = "none";
+    }
+  });
+
+  // Booking action
+  document.getElementById("bookBtn").addEventListener("click", () => {
+    const name = document.getElementById("name").value.trim();
+    const roomNumber = document.getElementById("roomNumber").value.trim();
+    const selectedHall = hallSelect.value;
+    const bookingDate = document.getElementById("bookingDate").value;
+    const timeSlot = document.getElementById("timeSlot").value;
+
+    if (!name || !roomNumber || !selectedHall || !bookingDate || !timeSlot) {
+      messageDiv.textContent = "Please fill in all fields.";
+      messageDiv.className = "message error";
+      return;
+    }
+
+    // Save booking to Firestore
+    db.collection("partyHallOrders").add({
+      name: name,
+      roomNumber: roomNumber,
+      hallName: selectedHall, // ✅ FIXED
+      bookingDate: bookingDate,
+      timeSlot: timeSlot,
+      description: hallDataMap[selectedHall]?.description || "",
+      price: hallDataMap[selectedHall]?.price || 0,
+      imageUrl: hallDataMap[selectedHall]?.imageUrl || "",
+      timestamp: firebase.firestore.FieldValue.serverTimestamp()
+    }).then(() => {
+      messageDiv.textContent = "Hall booked successfully!";
+      messageDiv.className = "message success";
+
+      // Reset fields
+      document.getElementById("name").value = "";
+      document.getElementById("roomNumber").value = "";
+      hallSelect.value = "";
+      document.getElementById("bookingDate").value = "";
+      document.getElementById("timeSlot").value = "";
+      hallDetails.style.display = "none";
+    }).catch(error => {
+      console.error("Error booking hall:", error);
+      messageDiv.textContent = "Error booking hall. Please try again.";
+      messageDiv.className = "message error";
+    });
+  });
+</script>
+</body>
+</html>

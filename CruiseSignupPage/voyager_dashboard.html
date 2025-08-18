@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Voyager Dashboard - Cruise Ship Management</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to bottom, #a2d4f2, #e0f7ff);
+      background-image: url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1400&q=80');
+      background-size: cover;
+      background-position: center;
+      color: #fff;
+    }
+
+    header {
+      background: rgba(0, 60, 110, 0.8);
+      padding: 30px 20px;
+      text-align: center;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    }
+
+    header h1 {
+      font-size: 2.8rem;
+      margin-bottom: 10px;
+    }
+
+    header h2 {
+      font-size: 1.5rem;
+    }
+
+    .dashboard-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-top: 40px;
+      gap: 20px;
+    }
+
+    .dashboard-container button {
+      width: 300px;
+      padding: 15px;
+      font-size: 1rem;
+      font-weight: bold;
+      color: #fff;
+      background: rgba(0, 60, 110, 0.8);
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: background 0.3s ease, transform 0.2s;
+    }
+
+    .dashboard-container button:hover {
+      background: rgba(0, 102, 204, 1);
+      transform: scale(1.05);
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 60px;
+      color: #cfefff;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1><strong>🚢 Voyager Dashboard</strong></h1>
+    <h2>Welcome aboard! What would you like to do today?</h2>
+  </header>
+
+  <div class="dashboard-container">
+    <button onclick="location.href='order_catering.html'">🍽️ Order Catering Items</button>
+    <button onclick="location.href='order_stationery.html'">📝 Order Stationery Items</button>
+    <button onclick="location.href='book_resort_movie.html'">🎬 Book Resort / Movie</button>
+    <button onclick="location.href='book_salon.html'">💇 Book Beauty Salon</button>
+    <button onclick="location.href='book_fitness.html'">🏋️ Book Fitness Center</button>
+    <button onclick="location.href='book_party_hall.html'">🎉 Book Party Hall</button>
+    <button onclick="location.href='view_orders.html'">📄 View My Orders</button>
+  </div>
+
+  <footer>
+    &copy; 2025 Cruise Ship Management System • Voyager Portal
+  </footer>
+
+</body>
+</html>

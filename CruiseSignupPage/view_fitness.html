@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>View Fitness Orders</title>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+<style>
+  body {
+    font-family: 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg, #2a0a29, #3d1a40, #5a2e5d);
+    color: #fff;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+  }
+  header {
+    text-align: center;
+    padding: 20px;
+    background: rgba(255,215,0,0.15);
+    font-size: 1.8rem;
+    font-weight: bold;
+    letter-spacing: 1px;
+    color: #ffd700;
+    border-bottom: 2px solid rgba(255,215,0,0.3);
+  }
+  table {
+    width: 95%;
+    margin: 20px auto;
+    border-collapse: collapse;
+    background: rgba(255,255,255,0.05);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  th, td {
+    padding: 12px;
+    text-align: center;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+  }
+  th {
+    background: rgba(255,215,0,0.08);
+    color: #ffd700;
+    font-weight: bold;
+  }
+  tr:hover {
+    background: rgba(255,215,0,0.07);
+  }
+  img {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 8px;
+    box-shadow: 0 0 8px rgba(255,215,0,0.4);
+  }
+</style>
+</head>
+<body>
+
+<header>Fitness Center Orders</header>
+
+<table>
+  <thead>
+    <tr>
+      <th>Customer Name</th>
+      <th>Room Number</th>
+      <th>Activity</th>
+      <th>Description</th>
+      <th>Price</th>
+      <th>Time Slot</th>
+      <th>Image</th>
+      <th>Timestamp</th>
+    </tr>
+  </thead>
+  <tbody id="bookingData">
+    <tr><td colspan="7">Loading...</td></tr>
+  </tbody>
+</table>
+
+<script>
+  // Your Firebase config
+    const firebaseConfig = {
+      apiKey: "AIzaSyD0cA756dZeVEbR4Vqovsh5p74niMxNT3w",
+      authDomain: "cruise-ship-management-s-98138.firebaseapp.com",
+      projectId: "cruise-ship-management-s-98138",
+      storageBucket: "cruise-ship-management-s-98138.appspot.com",
+      messagingSenderId: "401246402444",
+      appId: "1:401246402444:web:dd8a21a7e144e90d3788a9"
+    };
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
+
+  function formatDate(ts) {
+    if (!ts) return '';
+    const date = ts.toDate();
+    return date.toLocaleString();
+  }
+
+  function loadBookings() {
+    const tableBody = document.getElementById('bookingData');
+    db.collection('fitnessOrders')
+      .orderBy('timestamp', 'desc')
+      .get()
+      .then(snapshot => {
+        tableBody.innerHTML = '';
+        if (snapshot.empty) {
+          tableBody.innerHTML = '<tr><td colspan="7">No orders found</td></tr>';
+          return;
+        }
+        snapshot.forEach(doc => {
+          const data = doc.data();
+          tableBody.innerHTML += `
+            <tr>
+              <td>${data.customerName || ''}</td>
+              <td>${data.roomNumber || ''}</td>
+              <td>${data.activity || ''}</td>
+              <td>${data.description || ''}</td>
+              <td>${data.price || ''}</td>
+              <td>${data.timeSlot || ''}</td>
+              <td>${data.imageUrl ? `<img src="${data.imageUrl}" alt="Activity Image">` : ''}</td>
+              <td>${formatDate(data.timestamp)}</td>
+            </tr>
+          `;
+        });
+      })
+      .catch(err => {
+        console.error('Error loading orders:', err);
+        tableBody.innerHTML = '<tr><td colspan="7">Error loading data</td></tr>';
+      });
+  }
+
+  window.onload = loadBookings;
+</script>
+
+</body>
+</html>
