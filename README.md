@@ -145,7 +145,7 @@ cd cruise-ship-management
 ![Signup Page](screenshots/signup.png)
 
 ### 2. Login Page
-![Login Page](C:\Users\Bhavya aggarwal\Pictures\Screenshots\login.png)
+![Login Page](C:\Users\Bhavya aggarwal\Pictures\Screenshots\Login.png)
 
 ### 3. Voyager Dashboard
 ![Voyager Dashboard](screenshots/voyager-dashboard.png)
