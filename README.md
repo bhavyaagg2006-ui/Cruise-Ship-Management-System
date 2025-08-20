@@ -145,7 +145,8 @@ cd cruise-ship-management
 ![Signup Page](screenshots/signup.png)
 
 ### 2. Login Page
-![Login Page](C:\Users\Bhavya aggarwal\Pictures\Screenshots\Login.png)
+<img width="1920" height="915" alt="login_edited" src="https://github.com/user-attachments/assets/d25fd94b-6e31-4494-a046-e444f125d608" />
+
 
 ### 3. Voyager Dashboard
 ![Voyager Dashboard](screenshots/voyager-dashboard.png)
