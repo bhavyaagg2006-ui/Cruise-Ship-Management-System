@@ -174,7 +174,8 @@ firebase.initializeApp(firebaseConfig);
 ### 9. Book Party Hall 
 ![Book Party Hall](screenshots/partyhall_booking.png)
 
-
+### 10. Admin Dashboard
+![Book Admin Dashboard](screenshots/admin_dashboard.png)
 
 
 
