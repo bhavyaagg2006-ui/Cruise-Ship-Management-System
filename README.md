@@ -145,7 +145,11 @@ firebase.initializeApp(firebaseConfig);
 
 ---
 
-## Screenshots
+## 📸 Screenshots
+
+![Login Screenshot](https://github.com/username/repo/raw/main/screenshots/login.png)
+![Signup Screenshot](https://github.com/username/repo/raw/main/screenshots/signup.png)
+
 
 
 
