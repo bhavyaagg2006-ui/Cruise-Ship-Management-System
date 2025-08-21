@@ -46,13 +46,10 @@ This project supports multiple roles with role-based features and Firebase-backe
 - View service analytics (basic)
 
 ### Head-Cook
-- Add/Edit catering items (name, price, image)
-- Update catering order status (e.g., Received → Preparing → Delivered)
+- Add catering items (name, price, image).
 
 ### Supervisor
-- Monitor orders/bookings across departments
-- View issue logs / service coordination
-
+- Add stationery items (name, price, image)
 ---
 
 ## 🧰 Tech Stack
@@ -221,7 +218,7 @@ firebase.initializeApp(firebaseConfig);
    - Perform the following actions:  
      - Order catering items 🍽️  
      - Order stationery items 🖊️  
-     - Book resort/movie tickets 🎬  
+     - Book resort⛵  
      - Book beauty salon 💇‍♀️  
      - Book fitness center 🏋️‍♂️  
      - Book party hall 🎉   
