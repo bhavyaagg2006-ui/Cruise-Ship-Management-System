@@ -175,11 +175,17 @@ firebase.initializeApp(firebaseConfig);
 ![Book Party Hall](screenshots/partyhall_booking.png)
 
 ### 10. Admin Dashboard
-![Book Admin Dashboard](screenshots/admin_dashboard.png)
+![Admin Dashboard](screenshots/admin_dashboard.png)
 
+### 11. Add New Items
+![Add New Items](screenshots/add_items.png)
 
+### 12. Edit/Delete Items
+![Edit/Delete Items](screenshots/edit_delete_items.png)
 
+### 13. Maintain Menu Items
+![Maintain Menu Items](screenshots/menu_items.png)
 
-
-
+### 14. Voyager Registration
+![Voyager Registration](screenshots/voyager_registration.png)
 
