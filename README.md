@@ -125,7 +125,7 @@ Create collections:
 
 6. **Add Firebase config in your HTML files:**
 
-// Firebase configuration
+**// Firebase configuration**
 ```bash
 const firebaseConfig = {
   apiKey: "AIzaSyD0cA756dZeVEbR4Vqovsh5p74niMxNT3w",
@@ -137,10 +137,11 @@ const firebaseConfig = {
   measurementId: "G-29GKF5F9SS"
 };
 ```
-// Initialize Firebase
+**// Initialize Firebase**
+```bash
 firebase.initializeApp(firebaseConfig);
-
-7. Open index.html or login.html in your browser to test the application.```
+```
+7. **Open index.html or login.html in your browser to test the application.**
 
 ---
 
