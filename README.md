@@ -224,8 +224,7 @@ firebase.initializeApp(firebaseConfig);
      - Book resort/movie tickets 🎬  
      - Book beauty salon 💇‍♀️  
      - Book fitness center 🏋️‍♂️  
-     - Book party hall 🎉  
-     - View or cancel your orders  
+     - Book party hall 🎉   
 
 2. **Admin:**  
    - Log in with admin credentials  
@@ -257,7 +256,7 @@ git checkout -b feature-name
 ```
 
 4. **Make your changes:**
->>>Add new features, fix bugs, or enhance the design.
+   Add new features, fix bugs, or enhance the design.
 
 5. **Commit your changes:**
 ```bash
@@ -271,9 +270,9 @@ git push origin feature-name
 ```
 
 7. **Create a Pull Request:**
->>>Go to your forked repository on GitHub.
->>>Click Compare & Pull Request.
->>>Add a clear description and submit it for review.
+   Go to your forked repository on GitHub.
+   Click Compare & Pull Request.
+   Add a clear description and submit it for review.
 
 ---
 
