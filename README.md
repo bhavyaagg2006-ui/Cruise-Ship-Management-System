@@ -103,7 +103,7 @@ This project supports multiple roles with role-based features and Firebase-backe
 ```bash
 git clone <https://github.com/bhavyaagg2006-ui/Cruise-Ship-Management-System.git>
 
-2. Open the project folder in VS Code (or any code editor).
+2. **Open the project folder in VS Code (or any code editor).**
 
 3. **Create a Firebase project:**
 Go to Firebase Console
