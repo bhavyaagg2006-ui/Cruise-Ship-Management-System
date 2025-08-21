@@ -138,7 +138,12 @@ const firebaseConfig = {
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
 
-7. Open index.html or login.html in your browser to test the application.
+7. Open index.html or login.html in your browser to test the application.```
+
+---
+
+## Screenshots
+
 
 
 
