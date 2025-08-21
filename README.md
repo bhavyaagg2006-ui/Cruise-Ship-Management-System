@@ -129,7 +129,7 @@ service cloud.firestore {
     }
   }
 }
-
+---
 ## 🚀 Setup & Run
 
 Follow these steps to set up and run the Cruise Ship Management System project on your local machine:
@@ -138,6 +138,7 @@ Follow these steps to set up and run the Cruise Ship Management System project o
 ```bash
 git clone https://github.com/bhavyaagg2006-ui/cruise-ship-management.git
 cd cruise-ship-management
+---
 
 ## 📸 Screenshots
 
