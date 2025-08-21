@@ -189,3 +189,29 @@ firebase.initializeApp(firebaseConfig);
 ### 14. Voyager Registration
 ![Voyager Registration](screenshots/voyager_registration.png)
 
+### 15. Manager Dashboard
+![Manager Dashboard](screenshots/manager_dashboard.png)
+
+### 16. View Booked Resort
+![View Booked Resort](screenshots/view_resort.png)
+
+### 17. View Booked Salon
+![View Booked Saloon](screenshots/view_salon.png)
+
+### 18. View Booked Fitness
+![View Booked Fitness](screenshots/view_fitness.png)
+
+### 19. View Booked Party Hall
+![View Booked Party Hall](screenshots/view_partyhall.png)
+
+### 20. Head-Cook Dashboard
+![Head-Cook Dashboard](screenshots/headcook_dashboard.png)
+
+### 21. View Ordered Catering
+![View Ordered Catering](screenshots/view_catering.png)
+
+### 22. Supervisor Dashboard
+![Supervisor Dashboard](screenshots/supervisor_dashboard.png)
+
+### 23. View Booked Stationery
+![View Booked Stationery](screenshots/view_stationery.png)
