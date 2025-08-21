@@ -117,11 +117,7 @@ Enable Email/Password sign-in
 5. **Create Firestore Database:**
 Go to Firestore Database → Create Database
 Start in Test Mode
-Create collections:
-
-
-
-
+Create collections
 
 6. **Add Firebase config in your HTML files:**
 
@@ -215,3 +211,72 @@ firebase.initializeApp(firebaseConfig);
 
 ### 23. View Booked Stationery
 ![View Booked Stationery](screenshots/view_stationery.png)
+
+---
+
+## 👤 Usage
+1. **Voyager (Passenger):**  
+   - Sign up with your email and password  
+   - Log in to access the **Voyager Dashboard**  
+   - Perform the following actions:  
+     - Order catering items 🍽️  
+     - Order stationery items 🖊️  
+     - Book resort/movie tickets 🎬  
+     - Book beauty salon 💇‍♀️  
+     - Book fitness center 🏋️‍♂️  
+     - Book party hall 🎉  
+     - View or cancel your orders  
+
+2. **Admin:**  
+   - Log in with admin credentials  
+   - Add/Edit/Delete items (catering, fitness sessions, etc.)  
+   - Manage voyager registrations  
+   - Maintain menus and services  
+
+3. **Future Staff Roles:**  
+   - Manager, Head Cook, Supervisor modules will have dedicated dashboards  
+   - Access will be based on role-based login and permissions
+
+---
+
+## 🛂 Contributing
+
+We welcome contributions to improve this project! Follow these steps:
+
+1. **Fork this repository**  
+   - Click the **Fork** button on the top-right of this repo.
+
+2. **Clone your forked repository:**  
+```bash
+git clone https://github.com/bhavyaagg2006-ui/Cruise-Ship-Management-System.git
+```
+
+3. **Create a new branch:**
+```bash
+git checkout -b feature-name
+```
+
+4. **Make your changes:**
+>>>Add new features, fix bugs, or enhance the design.
+
+5. **Commit your changes:**
+```bash
+git add .
+git commit -m "Added feature: <short-description>"
+```
+
+6. **Push to your branch:**
+```bash
+git push origin feature-name
+```
+
+7. **Create a Pull Request:**
+>>>Go to your forked repository on GitHub.
+>>>Click Compare & Pull Request.
+>>>Add a clear description and submit it for review.
+
+---
+
+
+
+
