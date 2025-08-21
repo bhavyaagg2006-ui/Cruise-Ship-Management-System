@@ -128,7 +128,7 @@ service cloud.firestore {
       allow read, write: if true;
     }
   }
-}
+}```
 ---
 ## 🚀 Setup & Run
 
