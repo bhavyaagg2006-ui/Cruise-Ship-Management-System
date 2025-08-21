@@ -153,6 +153,10 @@ firebase.initializeApp(firebaseConfig);
 ### 2. Login Page
 ![login page](screenshots/login.png)
 
+### 3. Voyager Dashboard
+![Voyager Dashboard](screenshots/voyager_dashboard.png)
+
+
 
 
 
