@@ -141,42 +141,7 @@ cd cruise-ship-management
 
 ## 📸 Screenshots
 
-### 1. Signup Page
-![Signup Page](screenshots/signup.png)
-
-### 2. Login Page
-"C:\Users\Bhavya aggarwal\Pictures\Screenshots\login.png"
-
-
-### 3. Voyager Dashboard
-![Voyager Dashboard](screenshots/voyager-dashboard.png)
-
-### 4. Order Catering Items
-![Order Catering Items](screenshots/order-catering.png)
-
-### 5. Order Stationery Items
-![Order Stationery Items](screenshots/order-stationery.png)
-
-### 6. Book Resort 
-![Movie/Resort Booking](screenshots/movie-resort-booking.png)
-
-### 7. Book Beauty Salon
-![Beauty Salon Booking](screenshots/beauty-salon-booking.png)
-
-### 8. Book Fitness Center
-![Fitness Center Booking](screenshots/fitness-booking.png)
-
-### 9. Book Party Hall
-![Party Hall Booking](screenshots/party-hall-booking.png)
-
-### 11. Admin Dashboard
-![Admin Dashboard](screenshots/admin-dashboard.png)
-
-### 12. Add Item (Admin)
-![Add Item](screenshots/add-item.png)
-
-
-
-
+### 1. Login Page
+![Login Page](https://github.com/bhavyaagg2006-ui/Cruise-Ship-Management-System/blob/main/screenshots/login.png?raw=true)
 
 
