@@ -141,7 +141,10 @@ cd cruise-ship-management
 
 ## 📸 Screenshots
 
+### 1. Signup Page
+![Signup Page](screenshots/signup.png?raw=true)
+
 ### 1. Login Page
-![Login Page](https://github.com/bhavyaagg2006-ui/Cruise-Ship-Management-System/blob/main/screenshots/login.png?raw=true)
+![Login Page](screenshots/login.png?raw=true)
 
 
