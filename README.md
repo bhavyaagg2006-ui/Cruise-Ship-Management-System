@@ -65,36 +65,36 @@ This project supports multiple roles with role-based features and Firebase-backe
 
 ## 📁 Project Structure 
 **root**/
-  index.html
-  signup.html
-  login.html
+ -index.html
+ -signup.html
+ -login.html
 /
 **dashboards**/
-  voyager.html
-  admin.html
-  manager.html
-  headcook.html
-  supervisor.html
+  -voyager.html
+  -admin.html
+  -manager.html
+  -headcook.html
+  -supervisor.html
 /
 **features**/
-  catering.html
-  stationery.html
-  resort.html
-  salon.html
-  fitness.html
-  partyhall.html
+  -catering.html
+  -stationery.html
+  -resort.html
+  -salon.html
+  -fitness.html
+  -partyhall.html
 /
 **javascript**/
-  firebase-config.js
-  auth.js
-  voyager.js
-  admin.js
-  manager.js
-  headcook.js
-  supervisor.js
+  -firebase-config.js
+  -auth.js
+  -voyager.js
+  -admin.js
+  -manager.js
+  -headcook.js
+  -supervisor.js
 /
 **css**/
-  styles.css
+  -styles.css
 /
 
 ## Setup & Installation
@@ -107,17 +107,17 @@ git clone <https://github.com/bhavyaagg2006-ui/Cruise-Ship-Management-System.git
 2. **Open the project folder in VS Code (or any code editor).**
 
 3. **Create a Firebase project:**
-Go to Firebase Console
-Click Add Project → Follow steps to create a new project
+-Go to Firebase Console
+-Click Add Project → Follow steps to create a new project
 
 4. **Enable Authentication:**
-Navigate to Authentication → Sign-in method
-Enable Email/Password sign-in
+-Navigate to Authentication → Sign-in method
+-Enable Email/Password sign-in
 
 5. **Create Firestore Database:**
-Go to Firestore Database → Create Database
-Start in Test Mode
-Create collections
+-Go to Firestore Database → Create Database
+-Start in Test Mode
+-Create collections
 
 6. **Add Firebase config in your HTML files:**
 
@@ -256,9 +256,11 @@ git checkout -b feature-name
 ```
 
 4. **Make your changes:**
-   Add new features, fix bugs, or enhance the design.
+   -Add new features.
+   -Fix bugs.
+   -Enhance the design.
 
-5. **Commit your changes:**
+6. **Commit your changes:**
 ```bash
 git add .
 git commit -m "Added feature: <short-description>"
@@ -270,12 +272,39 @@ git push origin feature-name
 ```
 
 7. **Create a Pull Request:**
-   Go to your forked repository on GitHub.
-   Click Compare & Pull Request.
-   Add a clear description and submit it for review.
+   -Go to your forked repository on GitHub.
+   -Click Compare & Pull Request.
+   -Add a clear description and submit it for review.
 
 ---
 
+## 🪪 License
+
+This project is licensed under the **MIT License**.  
+See the [LICENSE](LICENSE) file for details.
+
+---
+
+## 🔮 Future Enhancements
+
+- Manager, Head Cook, Supervisor modules  
+- Real-time notifications  
+- Payment integration  
+
+---
+
+## 🏆 Credits
+
+- Developed by **Bhavya Aggarwal**  
+- Guided step-by-step using **OpenAI GPT-5**  
+
+---
+
+## 📞 Contact
+
+For queries or suggestions:  
+- GitHub: [bhavyaagg2006-ui]( https://github.com/bhavyaagg2006-ui)  
+- Email: bhavyaagg2006@gmail.com
 
 
 
