@@ -101,8 +101,8 @@ This project supports multiple roles with role-based features and Firebase-backe
 
 1. **Clone the repository:**  
 ```bash
-git clone <https://github.com/bhavyaagg2006-ui/Cruise-Ship-Management-System.git>
-```bash
+git clone <https://github.com/bhavyaagg2006-ui/Cruise-Ship-Management-System.git/README.md>
+```
 
 2. **Open the project folder in VS Code (or any code editor).**
 
